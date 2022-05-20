@@ -1,5 +1,8 @@
 # Capstone
 
+CONTENTS WERE ZIPPED DUE TO SIZE LIMITATION OF GITHUB 
+
+
 # PULMONARY EMBOLISM DETECTOR
 
 Capstone finalproject implementation of nueural networks:
