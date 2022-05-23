@@ -1,78 +1,59 @@
-# Capstone
-
-CONTENTS WERE ZIPPED DUE TO SIZE LIMITATION OF GITHUB 
-
-
 # PULMONARY EMBOLISM DETECTOR
 
-Capstone finalproject implementation of nueural networks:
+University of the West Indes Mona Jamaica
 
-```
-```
+Faculty of Science and Technology
 
-RSNA-STR-PE DATASET FROM KAGGLE
+COMP3901 Capstone finalproject 
 
-```python
-classes = ['{}_pe_present_on_image',
- '{}_negative_exam_for_pe',
- '{}_indeterminate',
- '{}_chronic_pe',
- '{}_acute_and_chronic_pe',
- '{}_central_pe',
- '{}_leftsided_pe',
- '{}_rightsided_pe',
- '{}_rv_lv_ratio_gte_1',
- '{}_rv_lv_ratio_lt_1',
-]
-```
+Classification of Pulmonary Embolism
 
-UNZIP file from GITHUB
+**The preprocessing and training sections can be skipped if retraining desired**
 
-then download models
-https://drive.google.com/file/d/1gT-K-Ov3RNtK_iZi6P440CtAZxZevLuY/view?usp=sharing
+#Preprocessing of Dataset 
+In the prepocessing stage; a 2.5D image transformation technique was applied to our dataset,
+which is combining 3 grayscale images that are direct neigbours in the sequence of images scan. they are combined in the same layer format of of an RGB image and this results in a image  that simulates having depth rathe than a flat appearance. introudcing depth to the images gives the neural network more information to learn.
 
-To run our program first the required models are needed and need to be downloaded and placed in the following folders
-link to models
+The Following notebooks split up the data into 7 parts and also creates a csv keeping track of them
+**csv-creator-1.ipynb**
+**csv-creator-2.ipynb**
+**csv-creator-3.ipynb**
+**csv-creator-4.ipynb**
+**csv-creator-5.ipynb**
+**csv-creator-6.ipynb**
+**csv-creator-7.ipynb**
 
 
-from the unzip file
-----------------------------------------------------
-models->RESNET50->version 2->results(2)->model.h5
+#Training models
 
-to the foler
-/present/
-----------------------------------------------------
-models->RESNET50->version 2->results(2)->weights.h5
+**Lungs Segmenter**
+Notebook: training/lungs-u-net.ipynb
+Dataset for training: https://www.kaggle.com/datasets/kmader/finding-lungs-in-ct-data
 
+**Pulmonary Embolism CNN classifier model**
+Notebook: training/pe-cnn.ipynb
+https://www.kaggle.com/competitions/rsna-str-pulmonary-embolism-detection/data
 
-to the folder
-/present/
-----------------------------------------------------
-models->RESNET50 for locations->version 2->results(1)->best_model.h5
+**Pulmonary Embolism Resnet50 classifier model**
+Notebook: training/pe-resnet50.ipynb
+https://www.kaggle.com/competitions/rsna-str-pulmonary-embolism-detection/data
 
-to the folder
-/location/
-----------------------------------------------------
-models->RESNET50 for locations->version 2->results(1)->weights.h5
-
-to the folder
-/location/
----------------------------------------------------
-models->UNET for lungs->results(2)->model.h5
-
-to the folder
-/lungs/
----------------------------------------------------
-models->UNET for lungs->results(2)->model-weights.h5
-
-to the folder
-/lungs/
----------------------------------------------------
-
-then 
-pip imstall -r requirements
+**Pulmonary Embolism Resnet50 location classifier model**
+Notebook: training/pe-resnet50.ipynb
+https://www.kaggle.com/competitions/rsna-str-pulmonary-embolism-detection/data
 
 
+#Starting the GUI Aplication
 
-then to run the GUI application 
-python main.py
+**Links to models:**
+https://drive.google.com/file/d/1ZtL9nWUm_Z6sVve9f6hddyDu9WqUma5n/view?usp=sharing
+
+The trained model and weights are too big to store in the repository.
+1.Download the zip file
+2.Extract the folder model containing the trained models
+3.place the folder "model" in the root of this directory
+
+**pip install -r requirements.txt**
+
+**run main.py**
+

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PE Report</title>
+</head>
+<body>
+    <style>
+
+        .header{
+            border: 2px solid blue;
+            text-align: center;
+        }
+
+        .main{
+            margin: 40px;
+        }
+
+        .patient-info{
+            text-align: right;
+        }
+
+        .report-sheet {
+            font-family: Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .report-sheet td, .report-sheet th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        .report-sheet tr:nth-child(even){background-color: #f2f2f2;}
+
+        .report-sheet tr:hover {background-color: #ddd;}
+
+        .report-sheet th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #000;
+            color: white;
+        }
+    </style>
+
+    <div class="header">
+        <h1>PE DETECTOR REPORT</h1>
+    </div>
+    <div class="main">
+        <div class="patient-info">
+            <h4>Patient's name: {{data.name}}</h4>
+        </div>
+        <div class="results">
+            <h4>------------------------DETECTION-----------------------</h4>
+            <h4>Detected PE: {{data.pe_amount}}/{{data.pe_total}} images</h4>
+    
+            <h4>------------------------LOCATION------------------------</h4>
+            <h4>Detected leftsided PE: {{data.pe_l_amount}} images</h4>
+            <h4>Detected center PE: {{data.pe_c_amount}} images</h4>
+            <h4>Detected rightsided PE: {{data.pe_r_amount}} images</h4>
+            
+            <h4>------------------------SEVERITY------------------------</h4>
+            <h4>Detected acute PE: {{data.pe_acute_amount}} images</h4>
+            <h4>Detected chronic PE: {{data.pe_chronic_amount}} images</h4>
+        </div>
+    </div>
+
+    <div>
+        <table class="report-sheet">
+            <tr>
+                <th>Image path</th>
+                <th>PE present</th>
+                <th>Left PE</th>
+                <th>Center PE</th>
+                <th>Right PE</th>
+                <th>Acute and Chronic PE</th>
+                <th>Chronic PE</th>
+            </tr>
+            {% for x in data.dataset %}
+            <tr>
+                {% for y in x %}
+                <td>{{y}}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    
+</body>
+</html>
