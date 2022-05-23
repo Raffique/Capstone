@@ -10,7 +10,7 @@ Classification of Pulmonary Embolism
 
 **The preprocessing and training sections can be skipped if retraining desired**
 
-#Preprocessing of Dataset 
+# Preprocessing of Dataset 
 In the prepocessing stage; a 2.5D image transformation technique was applied to our dataset,
 which is combining 3 grayscale images that are direct neigbours in the sequence of images scan. they are combined in the same layer format of of an RGB image and this results in a image  that simulates having depth rathe than a flat appearance. introudcing depth to the images gives the neural network more information to learn.
 
@@ -24,7 +24,7 @@ The Following notebooks split up the data into 7 parts and also creates a csv ke
 **csv-creator-7.ipynb**
 
 
-#Training models
+# Training models
 
 **Lungs Segmenter**
 Notebook: training/lungs-u-net.ipynb
@@ -43,7 +43,7 @@ Notebook: training/pe-resnet50.ipynb
 https://www.kaggle.com/competitions/rsna-str-pulmonary-embolism-detection/data
 
 
-#Starting the GUI Aplication
+# Starting the GUI Aplication
 
 **Links to models:**
 https://drive.google.com/file/d/1ZtL9nWUm_Z6sVve9f6hddyDu9WqUma5n/view?usp=sharing
