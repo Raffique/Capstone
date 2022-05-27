@@ -146,28 +146,22 @@ class PulmonaryEmbolismDetector():
             
 
             #present = self.model(img, training=False).numpy()[0]
-            present = self.model.predict(img, verbose=0)
-            print(present)
-            present = [present[0]]
+            present = self.model.predict(img, verbose=0)[0][0]
 
+            location = [0,0,0]
+            if present >= 0.3:
+                location = self.location_model.predict(img, verbose=0)[0]
 
-            if int(present[0]) >= 0.4:
-                location = self.location_model(img, training=False).numpy()[0]
-                location = list(map(binary, location))
-            else:
-                location = [0,0,0]
+            print("{} {}".format(present, location))
 
-
-            data = present + location
-
-
-            data = {'image': name, 'pe_present_on_image': round(data[0][0], 3), 'leftsided_pe': data[1],'central_pe': data[2],'rightsided_pe': data[3] }
+            data = {'image': name, 'pe_present_on_image': f"{present:04}", 'leftsided_pe': f"{location[0]:04}",'central_pe': f"{location[1]:04}",'rightsided_pe': f"{location[2]:04}" }
+            #data = {'image': name, 'pe_present_on_image': f"{present:04}", 'leftsided_pe': 0,'central_pe': 1,'rightsided_pe': 2 }
 
 
             self.results = pd.concat([self.results, pd.DataFrame([data])], ignore_index=True)
 
             if self.progressBar != None:
-                self.progressBar.setValue(((i+1) / datalength) * 100)
+                self.progressBar.setValue(int(((i+1) / datalength) * 100))
 
             #print(self.results)
 
