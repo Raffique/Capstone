@@ -171,7 +171,7 @@ class PulmonaryEmbolismDetector():
                 
 
             self.reporter.sop_concluder()
-            #self.reporter.generate_sop_report(outputdir=outputdir)
+            self.reporter.generate_sop_report(outputdir=outputdir)
             self.reporter.reset_sop()
 
         

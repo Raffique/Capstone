@@ -62,7 +62,7 @@ class Reporter:
         detect = ''
         if self.pe == 0:
             detect = "NO PE"
-        elif self.pe >= 1 and (self.left == 0 or self.central == 0 or self.right == 0):
+        elif self.pe >= 1 and (self.left == 0 and self.central == 0 and self.right == 0):
             detect = "NO PE"
         elif self.pe in range(5):
             detect = "LOW PE"
