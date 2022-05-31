@@ -1,27 +1,11 @@
 from PyQt5.uic import loadUi
-from PyQt5.QtWidgets import QDialog, QFileDialog, QListView, QAbstractItemView, QTreeView
+from PyQt5.QtWidgets import QDialog, QFileDialog
 #from cycles import Cycler
 from ai import PulmonaryEmbolismDetector
-
+from filemanager import FileManager
+from sequence import DCMSequence
 from settings import Settings
 from os import listdir
-
-def searchdirs():
-    file_dialog = QFileDialog()
-    file_dialog.setFileMode(QFileDialog.DirectoryOnly)
-    file_dialog.setOption(QFileDialog.DontUseNativeDialog, True)
-    file_view = file_dialog.findChild(QListView, 'listView')    
-
-    # to make it possible to select multiple directories:
-    if file_view:
-        file_view.setSelectionMode(QAbstractItemView.MultiSelection)
-    f_tree_view = file_dialog.findChild(QTreeView)
-    if f_tree_view:
-        f_tree_view.setSelectionMode(QAbstractItemView.MultiSelection)
-
-    if file_dialog.exec():
-        paths = file_dialog.selectedFiles()
-        return paths
 
 class ScanScreen(QDialog):
 
@@ -34,7 +18,7 @@ class ScanScreen(QDialog):
         self.detector = PulmonaryEmbolismDetector()
 
         self.outputdir = ''
-        self.inputdir = []
+        self.inputdir = ''
         
         self.file_or_folder = 'folder'
 
@@ -64,14 +48,13 @@ class ScanScreen(QDialog):
         #self.combo_Box.findText(text) # find the index
 
 
-        #dir = self.lineEdit.text()
-        for dir in self.inputdir:
-            if dir != '' and listdir(dir) and dir not in [self.comboBox.itemText(i) for i in range(self.comboBox.count())]:
-                print(dir)
-                self.comboBox.addItem(dir)
-            else:
-                pass
-                print("pass")
+        dir = self.lineEdit.text()
+        if dir != '' and listdir(dir) and dir not in [self.comboBox.itemText(i) for i in range(self.comboBox.count())]:
+            print(dir)
+            self.comboBox.addItem(dir)
+        else:
+            pass
+            print("pass")
             #pop box saying already in list or invalid
         self.lineEdit.setText('')
 
@@ -85,10 +68,8 @@ class ScanScreen(QDialog):
             #popup telling user  no
 
     def input_directory(self):
-        #self.inputdir = QFileDialog.getExistingDirectory(self, 'Choose a directory')
-        self.inputdir = searchdirs()
-        print(self.inputdir)
-        self.lineEdit.setText('{} files are selected'.format(len(self.inputdir)))
+        self.inputdir = QFileDialog.getExistingDirectory(self, 'Choose a directory')
+        self.lineEdit.setText(self.inputdir)
 
     def input_file(self):
         self.inputdir = QFileDialog.getOpenFileNames(self, 'Choose files', filter='files(*.zip)')[0]
@@ -108,20 +89,28 @@ class ScanScreen(QDialog):
 
     def start(self):
 
-        
-            
         dirs = []
-        if self.comboBox.count() > 0 and self.outputdir != "":
+        if self.comboBox.count > 0:
             dirs = [self.comboBox.itemText(i) for i in range(self.comboBox.count())]
 
-            self.outputdir = self.lineEdit_2.text()
-            #or saved output destination that saves report based on scan id number
+        if type(self.inputdir) != list:  
+            self.inputdir = self.lineEdit.text()
 
-            if self.outputdir[-1] != '/':
-                self.outputdir += '/'
+        self.outputdir = self.lineEdit_2.text()
+        #or saved output destination that saves report based on scan id number
 
-            #self.detector.config['lungs-localizer'] = Settings.config['localizer']
-            self.detector.detect(inputdir=dirs, outputdir=self.outputdir, progress=self.progressBar, progressDes=self.label_6)
+        if self.outputdir[-1] != '/':
+            self.outputdir += '/'
+       
+        if (self.inputdir != "" or type(self.inputdir) == list) and self.outputdir != "":
+            print('starting....')
+            fm = FileManager()
+            files = fm.tree(self.inputdir)
+            sq = DCMSequence(files)
+            files = sq.get_sq()
+
+            self.detector.config['lungs-localizer'] = Settings.config['localizer']
+            self.detector.data(inputdir=files, outputdir=self.outputdir, progress=self.progressBar)
 
 
     def stop(self):

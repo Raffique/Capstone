@@ -33,7 +33,7 @@
    <property name="geometry">
     <rect>
      <x>60</x>
-     <y>150</y>
+     <y>210</y>
      <width>171</width>
      <height>21</height>
     </rect>
@@ -49,7 +49,7 @@
    <property name="geometry">
     <rect>
      <x>60</x>
-     <y>180</y>
+     <y>240</y>
      <width>371</width>
      <height>31</height>
     </rect>
@@ -63,7 +63,7 @@ border-radius: 10px;</string>
    <property name="geometry">
     <rect>
      <x>60</x>
-     <y>240</y>
+     <y>300</y>
      <width>171</width>
      <height>21</height>
     </rect>
@@ -79,7 +79,7 @@ border-radius: 10px;</string>
    <property name="geometry">
     <rect>
      <x>60</x>
-     <y>270</y>
+     <y>330</y>
      <width>371</width>
      <height>31</height>
     </rect>
@@ -93,7 +93,7 @@ border-radius: 10px;</string>
    <property name="geometry">
     <rect>
      <x>60</x>
-     <y>410</y>
+     <y>420</y>
      <width>131</width>
      <height>31</height>
     </rect>
@@ -124,8 +124,8 @@ border-radius: 10px;</string>
   <widget class="QPushButton" name="pushButton_2">
    <property name="geometry">
     <rect>
-     <x>450</x>
-     <y>180</y>
+     <x>500</x>
+     <y>240</y>
      <width>31</width>
      <height>31</height>
     </rect>
@@ -141,7 +141,7 @@ border-radius: 10px;</string>
    <property name="geometry">
     <rect>
      <x>450</x>
-     <y>270</y>
+     <y>330</y>
      <width>31</width>
      <height>31</height>
     </rect>
@@ -163,7 +163,7 @@ border-radius: 10px;</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">font: 12pt &quot;Sans Serif&quot;;</string>
+    <string notr="true">font: 10pt &quot;Sans Serif&quot;;</string>
    </property>
    <property name="text">
     <string>Settings</string>
@@ -173,7 +173,7 @@ border-radius: 10px;</string>
    <property name="geometry">
     <rect>
      <x>220</x>
-     <y>410</y>
+     <y>420</y>
      <width>131</width>
      <height>31</height>
     </rect>
@@ -217,8 +217,8 @@ border-radius: 10px;</string>
   <widget class="QPushButton" name="pushButton_7">
    <property name="geometry">
     <rect>
-     <x>500</x>
-     <y>180</y>
+     <x>550</x>
+     <y>240</y>
      <width>31</width>
      <height>31</height>
     </rect>
@@ -234,7 +234,7 @@ border-radius: 10px;</string>
    <property name="geometry">
     <rect>
      <x>380</x>
-     <y>410</y>
+     <y>420</y>
      <width>131</width>
      <height>31</height>
     </rect>
@@ -244,6 +244,83 @@ border-radius: 10px;</string>
    </property>
    <property name="text">
     <string>cancel</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="comboBox">
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>160</y>
+     <width>371</width>
+     <height>31</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_9">
+   <property name="geometry">
+    <rect>
+     <x>450</x>
+     <y>240</y>
+     <width>31</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 12pt &quot;Sans Serif&quot;;
+color: rgb(255, 255, 255);
+background-color: rgb(85, 170, 0);
+font-weight: bold;</string>
+   </property>
+   <property name="text">
+    <string>+</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_10">
+   <property name="geometry">
+    <rect>
+     <x>450</x>
+     <y>160</y>
+     <width>31</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 9pt &quot;Sans Serif&quot;;
+color: rgb(255, 255, 255);
+background-color: rgb(170, 0, 0);
+font-weight: bold;</string>
+   </property>
+   <property name="text">
+    <string>X</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_4">
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>130</y>
+     <width>171</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 12pt &quot;Sans Serif&quot;;</string>
+   </property>
+   <property name="text">
+    <string>Directories</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_6">
+   <property name="geometry">
+    <rect>
+     <x>310</x>
+     <y>510</y>
+     <width>57</width>
+     <height>14</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
    </property>
   </widget>
  </widget>

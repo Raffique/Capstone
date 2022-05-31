@@ -50,3 +50,4 @@ class Settings(Base):
     pic_format = Column(String, default='png')
     v3d = Column(Boolean, default=False)
     results = Column(String, default='binary')
+    probability = Column(Integer, default=40)

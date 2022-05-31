@@ -96,7 +96,8 @@ class DBManager:
                 'pic_format' : obj.pic_format,
                 'v3d' : obj.v3d,
                 'results' : obj.results,
-                }
+                'probability': obj.probability
+            }
 
             return x
 

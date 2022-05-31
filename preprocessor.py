@@ -196,10 +196,20 @@ class Preprocessor:
                 return fd(x,y,z)
 
         def getname(x, y, z=1):
+
+            #get name of input folder from absolute path
+            def rooter(dir):
+                if dir[-1] == '/' and len(dir) > 1:
+                    dir = dir[:-1]
+                if dir == '/':
+                    return dir
+                else:
+                    return dir.split('/')[-1]
+
             if self.lungs_segmenter == None:
-                return self.dcmsq[x]['traverse']  + self.dcmsq[x]['sequence'][y]['filename']
+                return rooter(self.dcmsq[x]['inputdir']), self.dcmsq[x]['traverse']  + self.dcmsq[x]['sequence'][y]['filename']
             else:
-                return self.dcmsq[x]['traverse']  + self.dcmsq[x]['lungs'][y][z]['filename']
+                return rooter(self.dcmsq[x]['inputdir']), self.dcmsq[x]['traverse']  + self.dcmsq[x]['lungs'][y][z]['filename']
 
 
 
@@ -235,11 +245,11 @@ class Preprocessor:
                 else:
                     img = self.fusers(fdzd(sqindex, sliceindex-1, 0), fdzd(sqindex, sliceindex, 1), fdzd(sqindex, sliceindex+1, 2))
 
-            name = getname(sqindex, sliceindex)
+            root, name = getname(sqindex, sliceindex)
             sliceindex += 1
             self.sqmap[sqindex][0] = sliceindex
 
-            return img, name
+            return img, name, root
 
     def datasum(self):
         return sum(x[1] for x in self.sqmap)
@@ -253,7 +263,8 @@ if __name__ == "__main__":
     from filemanager import FileManager
     from sequence import DCMSequence
 
-    path = '/home/raffique/Desktop/BERRY_D'
+    #path = '/home/raffique/Desktop/BERRY_D'
+    path = '/home/raffique/Desktop/train/0cee26703028/bac7becd2970'
     #path = ['/home/raffique/Desktop/BERRY_D.zip']
     
 
@@ -284,37 +295,8 @@ if __name__ == "__main__":
     fix, ax = plt.subplots(4,4)
     for i in range(4):
         for j in range(4):
-            img, name = preprocessor.iterator()
+            img, name, root = preprocessor.iterator()
+            print("inputdir --> {} || name --> {}".format(root, name))
             ax[i,j].imshow(img)
     plt.show()
 
-"""
-PIL library
-from PIL import Image
-img = Image.open("pic")
-img = img.convert('RGB')
-
-if keep_aspect_ratio:
-                width, height = img.size
-                target_width, target_height = width_height_tuple
-
-                crop_height = (width * target_height) // target_width
-                crop_width = (height * target_width) // target_height
-
-                # Set back to input height / width
-                # if crop_height / crop_width is not smaller.
-                crop_height = min(height, crop_height)
-                crop_width = min(width, crop_width)
-
-                crop_box_hstart = (height - crop_height) // 2
-                crop_box_wstart = (width - crop_width) // 2
-                crop_box_wend = crop_box_wstart + crop_width
-                crop_box_hend = crop_box_hstart + crop_height
-                crop_box = [
-                    crop_box_wstart, crop_box_hstart, crop_box_wend,
-                    crop_box_hend
-                ]
-                img = img.resize(width_height_tuple, resample, box=crop_box)
-            else:
-                img = img.resize(width_height_tuple, resample)
-"""

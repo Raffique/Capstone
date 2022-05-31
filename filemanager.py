@@ -111,7 +111,8 @@ class FileManager:
                     sub_folder.append({'filename': filename+'/', 'data': full_path+'/'})
                     helper(full_path)
                     
-            self.folders.append({'inputdir': path[:-1*len(traverse_path) +1], 'traverse': traverse_path, 'sequence': sub_folder, 'length': len(sub_folder), 'fromzip': False, 'haszip': haszip, 'hasdcm': hasdcm})
+            #self.folders.append({'inputdir': path[:-1*len(traverse_path) +1], 'traverse': traverse_path, 'sequence': sub_folder, 'length': len(sub_folder), 'fromzip': False, 'haszip': haszip, 'hasdcm': hasdcm})
+            self.folders.append({'inputdir': dir, 'traverse': traverse_path, 'sequence': sub_folder, 'length': len(sub_folder), 'fromzip': False, 'haszip': haszip, 'hasdcm': hasdcm})
 
         if os.path.isdir(str(dir)):
             if dir[-1] == '/' and len(dir) != 1:
@@ -132,18 +133,19 @@ class FileManager:
 
 if __name__ == "__main__":
 
-    """ path1 = '/home/raffique/Desktop/BERRY_D'
+    #path1 = '/home/raffique/Desktop/BERRY_D'
+    path1 = '/home/raffique/Desktop/train/0cee26703028/bac7becd2970'
     fm = FileManager()
     files = fm.tree(path1)# tree function dosnt like '/' at the end of it
     i = 0
     #print(files)
-    print(files[i]['inputdir'])
-    print(files[i]['traverse'])
+    print("inputdir --> {}".format(files[i]['inputdir']))
+    print("traverse --> {}".format(files[i]['traverse']))
     for el in files[i]['sequence']:
-        print(el) """
+        print(el)
    
 
-    path2 = ['/home/raffique/Desktop/BERRY_D.zip']
+    """ path2 = ['/home/raffique/Desktop/BERRY_D.zip']
     #path2 = 'app.zip'
     fm = FileManager()
     files = fm.tree(path2)
@@ -153,4 +155,4 @@ if __name__ == "__main__":
     print(files[i]['length'])
     print(files[i]['hasdcm'])
     for el in files[i]['sequence']:
-        print(el)
+        print(el) """

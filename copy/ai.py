@@ -1,6 +1,5 @@
 #keras.layers import Input, Lambda, Dense, Flatten,Dropout,Conv2D,MaxPooling2D, BatchNormalization
 #from keras.optimizers import SGD
-from telnetlib import SE
 from keras.models import load_model
 #from keras.preprocessing import image
 #from sklearn.metrics import accuracy_score,classification_report,confusion_matrix
@@ -11,9 +10,7 @@ from os import makedirs
 import pandas as pd
 import numpy as np
 from PIL import Image
-from report import generate_report, Reporter
-from filemanager import FileManager
-from sequence import DCMSequence
+from report import generate_report
 from preprocessor import Preprocessor
 from settings import Settings
 import matplotlib.pyplot as plt 
@@ -43,12 +40,40 @@ class PulmonaryEmbolismDetector():
 
         self.preprocessor = Preprocessor()
 
-        self.reporter = Reporter()
-
         self. progressBar = None
 
-        self.config = {}
+        self.config = {
+            'detector': True,
+            'save-images' : False,
+            'save-csv' : True,
+            'save-report' : True,
+            'structure' : 'copy',
+            'format' : 'jpg',
+            'lungs-localizer': False,
 
+        }
+
+        self.results = pd.DataFrame(columns=['root', 'image','pe_present_on_image','leftsided_pe','central_pe','rightsided_pe'])
+
+
+
+    def data(self, inputdir:str,  outputdir:str, progress=None):
+
+        #if file converted isnt actually a dcm image skip detecting or saving
+
+        self.progressBar = progress
+
+        if self.config['detector'] == True:
+
+            self.detect(inputdir)
+            self.report(outputdir)
+
+
+        #change to save data to database well may
+        if self.config['save-images'] == True:
+
+            #self.save(initdir, filename, img, outputdir)
+            pass
     
 
     def save(self, initdir, filename, img, outputdir):
@@ -96,106 +121,99 @@ class PulmonaryEmbolismDetector():
             image.save('{}.{}'.format(outputdir+ stripper(filename.split('/')[-1]), self.config['format']))
 
 
-    def detect(self, inputdir, outputdir:str, progress=None, progressDes=None):
+    def detect(self, inputdir):
 
-        self.config = Settings.config
+        def binary(x):
 
-        self.reporter.config = self.config
-
-        self.progressBar = progress
-
-        threshold = self.config['probability'] / 100
-
-        def thresholder(x):
-            if x >= threshold:
+            if x >= 1:
                 return 1
             else:
                 return 0
 
         #set lung localizer on or off
-        if self.config['localizer'] == True:
+        if self.config['lungs-localizer'] == True:
             self.preprocessor.set_mode(True)
         else:
             self.preprocessor.set_mode(False)
 
-        
-        #=========================================================================#
+        #preprocessor sorts the squence of files, localize lungs and transform img
+        self.preprocessor.ssf(inputdir)
 
-        total = len(inputdir)
+        datalength = self.preprocessor.datasum()
 
-        for index, dir in enumerate(inputdir): 
-            print(dir)
+        threshold = Settings.config['probability'] / 100
 
-            progressDes.setText("{}/{}".format(index+1,total))
+        for i in range(datalength):
+            img, name, root = self.preprocessor.iterator()
+            img = img.reshape(1,512,512,3)
+            
 
-            fm = FileManager()
-            files = fm.tree(dir)
-            sq = DCMSequence(files)
-            files = sq.get_sq()
+            #present = self.model(img, training=False).numpy()[0]
+            present = self.model.predict(img, verbose=0)[0][0]
 
-            #preprocessor sorts the squence of files, localize lungs and transform img
-            self.preprocessor.ssf(files)
+            location = [0,0,0]
+            if present >= threshold:
+                location = self.location_model.predict(img, verbose=0)[0]
 
-            datalength = self.preprocessor.datasum()
+            #print("{} {}".format(present, location))
 
-            for i in range(datalength):
-                img, name, root = self.preprocessor.iterator()
-                img = img.reshape(1,512,512,3)
-                
-
-                #present = self.model(img, training=False).numpy()[0]
-                present = self.model.predict(img, verbose=0)[0][0]
-
-                location = [0,0,0]
-                if present >= threshold:
-                    location = self.location_model.predict(img, verbose=0)[0]
-
-                #print("{} {}".format(present, location))
-
-                present = thresholder(present)
-                location[0] = thresholder(location[0])
-                location[1] = thresholder(location[1])
-                location[2] = thresholder(location[2])
-                data = {'root':root, 'image': name, 'pe_present_on_image': present, 'leftsided_pe': location[0],'central_pe': location[1],'rightsided_pe': location[2]}
-                #data = {'root':root, 'image': name, 'pe_present_on_image': f"{present:04}", 'leftsided_pe': f"{location[0]:04}",'central_pe': f"{location[1]:04}",'rightsided_pe': f"{location[2]:04}" }
-                #data = {'image': name, 'pe_present_on_image': f"{present:04}", 'leftsided_pe': 0,'central_pe': 1,'rightsided_pe': 2 }
+            data = {'root':root, 'image': name, 'pe_present_on_image': f"{present:04}", 'leftsided_pe': f"{location[0]:04}",'central_pe': f"{location[1]:04}",'rightsided_pe': f"{location[2]:04}" }
+            #data = {'image': name, 'pe_present_on_image': f"{present:04}", 'leftsided_pe': 0,'central_pe': 1,'rightsided_pe': 2 }
 
 
-                #self.results = pd.concat([self.results, pd.DataFrame([data])], ignore_index=True)
-                self.reporter.sop_lvl_adder(data)
+            self.results = pd.concat([self.results, pd.DataFrame([data])], ignore_index=True)
 
+            if self.progressBar != None:
+                self.progressBar.setValue(int(((i+1) / datalength) * 100))
 
-                if self.progressBar != None:
-                    self.progressBar.setValue(int(((i+1) / datalength) * 100))
+            print(self.results)
 
-                
-
-            self.reporter.sop_concluder()
-            #self.reporter.generate_sop_report(outputdir=outputdir)
-            self.reporter.reset_sop()
+        print(self.results)
 
         
-        self.reporter.generate_study_report(outputdir=outputdir)
-        self.reporter.reset_study()
+    def report(self, outputdir):
 
-        progressDes.setText("")
-        self.progressBar.setValue(0)
-
-        
-    
+        if self.config["save-csv"]:
+            #print(self.results)
+            self.results.to_csv(outputdir+'/report.csv', index=False)
 
 
+        if self.config["save-report"]:
+
+            total = sum(1 for x in self.results.iterrows())
+            pe = sum(1 for x in self.results['pe_present_on_image'] if x == 1)
+            left_pe = sum(1 for x in self.results['leftsided_pe'] if x == 1)
+            center_pe = sum(1 for x in self.results['central_pe'] if x == 1)
+            right_pe = sum(1 for x in self.results['rightsided_pe'] if x == 1)
+
+            dataset = self.results.values.tolist()
+
+            generate_report(
+                outputdir=outputdir,
+                name='XXXXXX', 
+                total = total,
+                pe = pe,
+                left = left_pe,
+                center = center_pe,
+                right = right_pe,
+                dataset = dataset 
+            )
+
+        #reset dataframe
+        self.results = pd.DataFrame(columns=['root','image','pe_present_on_image','leftsided_pe','central_pe','rightsided_pe'])
 
 if __name__ == "__main__":
     from filemanager import FileManager
     from sequence import DCMSequence
     from preprocessor import Preprocessor
-    path1 = '/home/raffique/Desktop/train/test/PAT001'
-    path2 = '/home/raffique/Desktop/train/test/PAT002'
-    path3 = '/home/raffique/Desktop/train/test/PAT003'
-    path = [path1, path2, path3]
+    path = '/home/raffique/Desktop/train/6897fa9de148'
+    fm = FileManager()
+    files = fm.tree(path)
+    sq = DCMSequence(files)
+    files = sq.get_sq()
     ai = PulmonaryEmbolismDetector()
-    ai.detect(inputdir=path, outputdir="/home/raffique/Documents/test/")
+    ai.config['lungs-localizer'] = False
+    ai.data(inputdir=files, outputdir="/home/raffique/Documents/")
 
 
 

@@ -1,3 +1,4 @@
+from attr import attr
 from database import DBManager
 import models as md
 
@@ -24,9 +25,9 @@ class Settings:
 
     """
 
-    def mod(localizer, pdf, csv, pic_format, v3d, res):
-        s = md.Settings(localizer, pdf, csv, pic_format, v3d, res)
-        DBManager.mod_row(obj=s, id=1)
+    def mod(**kwargs):
+        for key, value in kwargs.items():
+            DBManager.mod_row(obj=md.Settings, id=1, attr=key, value=value)
         data = DBManager.get_row(obj=md.Settings, id=1)
         Settings.config = data[0]
         

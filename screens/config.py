@@ -17,6 +17,23 @@ class ConfigScreen(QDialog):
         self.pushButton.clicked.connect(self.save) #save
         self.pushButton_5.clicked.connect(self.cancel) #cancel
 
+        self.config = settings.Settings.config
+        self.checkBox_3.setChecked(self.config['localizer'])
+        self.checkBox.setChecked(self.config['pdf'])
+        self.checkBox_2.setChecked(self.config['csv'])
+        if self.config['pic_format'] == 'jpg':
+            self.radioButton_3.setChecked(True)
+        elif self.config['pic_format'] == 'png':
+            self.radioButton_4.setChecked(True)
+        if self.config['results'] == 'binary':
+            self.radioButton_5.setChecked(True)
+        elif self.config['results'] == 'dots':
+            self.radioButton_6.setChecked(True)
+        elif self.config['results'] == 'sticky':
+            self.radioButton_7.setChecked(True)
+        elif self.config['results'] == 'word':
+            self.radioButton_8.setChecked(True)
+        self.spinBox.setValue(self.config['probability'])
         
 
     def save(self):
@@ -30,16 +47,19 @@ class ConfigScreen(QDialog):
             pic = 'png'
         v3d = self.checkBox_4.isChecked()
 
-        res = ''
+        results = ''
         if self.radioButton_5.isChecked():
-            res = 'binary'
+            results = 'binary'
         elif self.radioButton_6.isChecked():
-            res = 'dots'
+            results = 'dots'
         elif self.radioButton_7.isChecked():
-            res = 'sticky'
+            results = 'sticky'
         elif self.radioButton_8.isChecked():
-            res = 'words'
-        settings.Settings.mod(localizer=localizer, pdf=pdf, csv=csv, pic_format=pic, v3d=v3d, res=res)
+            results = 'words'
+
+        probability = self.spinBox.value()
+
+        settings.Settings.mod(localizer=localizer, pdf=pdf, csv=csv, pic_format=pic, v3d=v3d, results=results, probability=probability)
 
         self.widget.setCurrentIndex(self.app_map['home'])
 
