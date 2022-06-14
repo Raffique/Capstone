@@ -16,7 +16,9 @@ from filemanager import FileManager
 from sequence import DCMSequence
 from preprocessor import Preprocessor
 from settings import Settings
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
+import sys 
+import argparse
 
 
 class PulmonaryEmbolismDetector():
@@ -126,7 +128,8 @@ class PulmonaryEmbolismDetector():
         for index, dir in enumerate(inputdir): 
             print(dir)
 
-            progressDes.setText("{}/{}".format(index+1,total))
+            if progressDes != None:
+                progressDes.setText("{}/{}".format(index+1,total))
 
             fm = FileManager()
             files = fm.tree(dir)
@@ -178,8 +181,9 @@ class PulmonaryEmbolismDetector():
         self.reporter.generate_study_report(outputdir=outputdir)
         self.reporter.reset_study()
 
-        progressDes.setText("")
-        self.progressBar.setValue(0)
+        if self.progressBar != None:
+            progressDes.setText("")
+            self.progressBar.setValue(0)
 
         
     
@@ -187,15 +191,17 @@ class PulmonaryEmbolismDetector():
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--input', required=True, metavar='path/to/inputfiles')
+    parser.add_argument('--output', required=True, metavar='path/to/outputfiles')
+    args = parser.parse_args()
+    outputdir = args.output
+    inputdir = args.input.split(',')
     from filemanager import FileManager
     from sequence import DCMSequence
     from preprocessor import Preprocessor
-    path1 = '/home/raffique/Desktop/train/test/PAT001'
-    path2 = '/home/raffique/Desktop/train/test/PAT002'
-    path3 = '/home/raffique/Desktop/train/test/PAT003'
-    path = [path1, path2, path3]
     ai = PulmonaryEmbolismDetector()
-    ai.detect(inputdir=path, outputdir="/home/raffique/Documents/test/")
+    ai.detect(inputdir=inputdir, outputdir=outputdir)
 
 
 
